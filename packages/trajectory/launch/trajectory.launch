@@ -12,10 +12,9 @@
     <!-- Publication -->
     <!-- "tag_detections": duckietown_msgs/AprilTagDetectionArray. Tag detections. -->
     <!-- "tag_detections/image/compressed": sensor_msgs/CompressedImage. Image with detections superimposed in JPEG format. -->
-    <group ns="$(arg veh)">
+<group ns="$(arg veh)">
         <node name="$(arg node_name)" pkg="$(arg pkg_name)" type="$(arg node_name).py" output="screen">
             <remap from="trajectory_node/odom" to="deadreckoning_node/odom" />
-            <remap from="trajectory_node/goal" to="planning_trajectory_node/goal" />
         </node>
-    </group>
+</group>
 </launch>
