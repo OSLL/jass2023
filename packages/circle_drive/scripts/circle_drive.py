@@ -18,13 +18,13 @@ class MyNode(DTROS):
         self.speed = {
             0: {'v': 0.2,
                 'omega': 1.6,
-                'count': 200},
+                'count': 220},
             1: {'v': 0.5,
                 'omega': 0,
-                'count': 200},
+                'count': 220},
             2: {'v': 0.2,
                 'omega': -2.2,
-                'count': 200}
+                'count': 220}
         }
 
 
