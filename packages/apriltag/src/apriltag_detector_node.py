@@ -16,7 +16,10 @@ from cv_bridge import CvBridge
 from sensor_msgs.msg import CompressedImage
 from geometry_msgs.msg import Transform, Vector3, Quaternion
 from duckietown_msgs.msg import BoolStamped
+import math
 
+def distance(x1, y1, x2, y2):
+    return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
 
 class AprilTagDetector(DTROS):
@@ -74,8 +77,17 @@ class AprilTagDetector(DTROS):
             marker_id = [i.tag_id for i in markers]
             self.log(f'detected marker from apriltag {marker_id}')
             #self.log(marker_id)
+            max_dist = None
+            tag = None
+            for i in markers:
+                point1 = i.corners[3]
+                point2 = i.corners[1]
+                dist = distance(point1[0], point1[1], point2[0], point2[1])
+                if max_dist is None or max_dist < dist:
+                    max_dist = dist
+                    tag = i.tag_id
             if len(marker_id) != 0:
-                marker_msg = Int32MultiArray(data=marker_id)
+                marker_msg = Int32MultiArray(data=[tag])
                 self.marker_id_pub.publish(marker_msg)
                 self.start_detect = False
 

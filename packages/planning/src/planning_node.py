@@ -11,6 +11,7 @@ from geometry_msgs.msg import Point, Vector3
 from numpy import ndarray
 import yaml
 import pprint
+import random
 
 MOVEMENT = {
     0: 'left',
@@ -108,13 +109,16 @@ class Planning(DTROS):
         )
 
     def update_trajectory_after_cross(self, msg):
-        self.log('update vals')
-        self.log(f'prev before, {self.prev_state}, traj == {self.trajectory}')
-        self.prev_state = self.trajectory[0]
-        del self.trajectory[0]
-        self.log(f'prev after, {self.prev_state}, traj == {self.trajectory}')
-        if len(self.trajectory) == 1:
-            self.log('next stop is destination')
+        if self.state is None or self.map is None or self.prev_state is None:
+            pass
+        else:
+            self.log('update vals')
+            self.log(f'prev before, {self.prev_state}, traj == {self.trajectory}')
+            self.prev_state = self.trajectory[0]
+            del self.trajectory[0]
+            self.log(f'prev after, {self.prev_state}, traj == {self.trajectory}')
+            if len(self.trajectory) == 1:
+                self.log('next stop is destination')
 
     def update_state(self):
         map_conf = None
@@ -155,7 +159,14 @@ class Planning(DTROS):
     def get_way(self, msg):
         self.log('in get_way planning method')
         if self.state is None or self.map is None or self.prev_state is None:
-            self.log('in process to init values')
+            rotation = SIGN[self.markers_db_yaml[msg.data[0]]['traffic_sign_type']]
+            self.log(f'marker = {msg.data[0]}')
+            self.log(f'rotation will be from {rotation}')
+            rand = random.randint(0,1)
+            rotation = rotation[rand]
+            self.log(f'random is {rand}, rotation is {rotation}')
+            self.rotation_pub.publish(Int8(data=rotation))
+            self.log(f'trajectory == {rotation}')
         else:
             stop_msg = Bool()
             stop_msg.data = True
